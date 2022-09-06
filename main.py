@@ -34,14 +34,7 @@ if __name__=="__main__":
 
     mask_test_path = config.INPAINTING["MASKTESTPATH"]
     mask_test_files = glob(os.path.join(mask_test_path,"*.jpg"))
-    CUDA_VISIBLE_DEVICES=3
     print(f"TRAIN MASK FILES LOADED : {len(mask_test_files)}")
-    print(torch.cuda.is_available())
-    print(torch.cuda.get_device_name(0))
-    print(torch.cuda.device_count())
-    print(torch.cuda.current_device())
-    print(torch.cuda.get_device_name(0))
-    print(torch.cuda.get_device_name(4))
 
 
     train_dataset=dataset.InfillDatasetCutout(train_files, maskPath=mask_train_files)
@@ -51,13 +44,13 @@ if __name__=="__main__":
         train_dataset,
         batch_size=1,
         shuffle=True,
-        num_workers=2
+        num_workers=8
     )
     test_loader=torch.utils.data.DataLoader(
         test_dataset,
         batch_size=1,
         shuffle=False,
-        num_workers=2
+        num_workers=8
     )
 
     G=models.Generator().to(config.DEVICE)

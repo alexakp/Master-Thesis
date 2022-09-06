@@ -3,7 +3,6 @@ out_imgs
 inpainting/log
 output
 __pycache__
-login_and_down_and_upload_ssh_scp.txt
 meeting_doc
 *.png
 

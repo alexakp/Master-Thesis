@@ -1,0 +1,18 @@
+
+### login Simula
+ssh -YAC2 alexakp@dnat.simula.no -p 60441
+
+# g001
+ssh -t -L 8001:localhost:8001 alexakp@dnat.simula.no -p 60441 ssh -L 8001:localhost:8888 g001
+
+# sync changes from desktop pc --> ex3 server
+rsync -avrz -e "ssh -p 60441" /c/Users/"Alexander PC hjemme"/Desktop/UiO/Master_Thesis alexakp@dnat.simula.no:D1/
+
+# sync changes from ex3 server -->  desktop pc
+rsync -avrz -e "ssh -p 60441" alexakp@dnat.simula.no:D1/Master_Thesis /c/Users/"Alexander PC hjemme"/Desktop/UiO
+
+## run sbatch on ex3
+sbatch run_script.sbatch
+
+# list req for conda env
+conda list -e > requirements.txt

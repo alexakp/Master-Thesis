@@ -52,8 +52,11 @@ def cover_img(img,mask):
 def save_image_from_dataloader3c(image,imagesavefolder,prefix,indx):
     image=image.cpu()
     image = torchvision.utils.make_grid(image)
-    image=(np.transpose(image.numpy().astype(np.float),(1,2,0))+1)/2
+    #print(image.shape) # torch
+    image=(np.transpose(image.numpy().astype(np.float),(1,2,0))+1)/2 # [0.1] after this
+    #print(image.shape) # numpy
+    #print(image+[0,1,2])
+    #print('----------')
     image=(image*255).astype(np.uint8)
     image_pil=Image.fromarray(image)
-    image_pil.save(os.path.join(imagesavefolder,f"{prefix}_{indx}.jpg"))    
-    pass
+    image_pil.save(os.path.join(imagesavefolder,f"{prefix}_{indx}.jpg"))

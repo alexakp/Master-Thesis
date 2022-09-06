@@ -14,6 +14,7 @@ from test import cover_img
 
 class ColorizeDataset():
     def __init__(self,filepaths,test=False):
+        print("COLORIZEEEEE")
         self.files=filepaths
         
         self.aug=albumentations.Compose(
@@ -53,6 +54,7 @@ class ColorizeDataset():
 
 class InfillDatasetCutout():
     def __init__(self,filepaths,maskPath=[],test=False):
+        print("INFFFFFFFFFFFIIIIIIIII")
         self.files=filepaths
         self.maskPath = maskPath
         
@@ -64,6 +66,11 @@ class InfillDatasetCutout():
         self.target_aug=albumentations.Compose(
             [
                 albumentations.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5), max_pixel_value=255.0, always_apply=True)
+            ]
+        )
+        self.inv_aug = albumentations.Compose(
+            [
+                albumentations.Normalize(mean=(-0.5/0.5, -0.5/0.5, -0.5/0.5), std=(1/0.5, 1/0.5, 1/0.5), max_pixel_value=255.0, always_apply=True),
             ]
         )
 
@@ -90,15 +97,14 @@ class InfillDatasetCutout():
         mask_arr = np.array(mask_image)
 
         image, _ = cover_img(image_arr, mask_arr)
-        #print(image.shape)
-        #pil_image=Image.fromarray(image)
-        #pil_image.show()
 
         image=self.aug(image=image)["image"]
 
         target_image=np.array(target_image)
         target_image=self.target_aug(image=target_image)["image"]
+        #target_image=self.inv_aug(image=target_image)["image"]
 
+        # flip?
         if random.random()<0.5:
             image=image[:,::-1,:]
             target_image=target_image[:,::-1,:]
@@ -115,6 +121,7 @@ class InfillDatasetCutout():
 
 class ABDataset():
     def __init__(self,filepaths1,filepaths2,test=False):
+        print("ABBBBBBBBBBBBBBBBBBBBBBBBBBBBBB")
         self.img_files=filepaths1
         self.lbl_files=[os.path.join(filepaths2,os.path.basename(t)) for t in filepaths1]
         self.aug3c=albumentations.Compose(
