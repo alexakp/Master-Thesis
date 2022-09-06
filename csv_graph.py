@@ -13,4 +13,4 @@ for v in df['epochs']:
 plt.plot(GLoss_arr)
 plt.plot(DLoss_arr)
 
-plt.show()
+plt.savefig('G_and_D_Loss.png')

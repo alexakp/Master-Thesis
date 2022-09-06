@@ -63,24 +63,25 @@ class Engine:
         pass
     def generate(self,dataloader,epoch,savemodel=True):
         with torch.no_grad():
-            
-            os.makedirs(os.path.join(self.project,config.LOGPATH,str(epoch)), exist_ok=True)
-            imagesavefolder=os.path.join(self.project,config.LOGPATH,str(epoch))
-            if savemodel:
-                os.makedirs(os.path.join(self.project,config.LOGPATH,"models",str(epoch)), exist_ok=True)
-                modelsavepath=os.path.join(self.project,config.LOGPATH,"models",str(epoch),"G.pth")
-                #torch.save(self.G.state_dict(), modelsavepath)
-            self.G.eval()
-            self.D.eval()
-            for indx,data in enumerate(dataloader):
-                image,target_image=data["image"].cuda(),data["target_image"].cuda()
-                fake=self.G(image)
+            if(epoch%5==0):
+                print(f"SAVING FILES AT EPOCH: {epoch} ")
+                os.makedirs(os.path.join(self.project,config.LOGPATH,str(epoch)), exist_ok=True)
+                imagesavefolder=os.path.join(self.project,config.LOGPATH,str(epoch))
+                if savemodel:
+                    os.makedirs(os.path.join(self.project,config.LOGPATH,"models",str(epoch)), exist_ok=True)
+                    modelsavepath=os.path.join(self.project,config.LOGPATH,"models",str(epoch),"G.pth")
+                    #torch.save(self.G.state_dict(), modelsavepath)
+                self.G.eval()
+                self.D.eval()
+                for indx,data in enumerate(dataloader):
+                    image,target_image=data["image"].to(self.device),data["target_image"].to(self.device)
+                    fake=self.G(image).to(self.device)
 
-                
+                    
 
-                img_utils.save_image_from_dataloader3c(image,imagesavefolder,"inp",indx)
-                img_utils.save_image_from_dataloader3c(fake,imagesavefolder,"output",indx)
-                img_utils.save_image_from_dataloader3c(target_image,imagesavefolder,"gt",indx)
+                    img_utils.save_image_from_dataloader3c(image,imagesavefolder,"inp",indx)
+                    img_utils.save_image_from_dataloader3c(fake,imagesavefolder,"output",indx)
+                    img_utils.save_image_from_dataloader3c(target_image,imagesavefolder,"gt",indx)
                
                
     

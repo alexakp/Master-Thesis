@@ -15,9 +15,9 @@ import dataset  ## fix
 import engine  ## fix
 import config
 import pandas as pd
+import matplotlib.pyplot as plt
 
 torch.cuda.empty_cache()
-
 
 if __name__=="__main__":
     train_path = config.INPAINTING["TRAINPATH"]
@@ -34,7 +34,14 @@ if __name__=="__main__":
 
     mask_test_path = config.INPAINTING["MASKTESTPATH"]
     mask_test_files = glob(os.path.join(mask_test_path,"*.jpg"))
+    CUDA_VISIBLE_DEVICES=3
     print(f"TRAIN MASK FILES LOADED : {len(mask_test_files)}")
+    print(torch.cuda.is_available())
+    print(torch.cuda.get_device_name(0))
+    print(torch.cuda.device_count())
+    print(torch.cuda.current_device())
+    print(torch.cuda.get_device_name(0))
+    print(torch.cuda.get_device_name(4))
 
 
     train_dataset=dataset.InfillDatasetCutout(train_files, maskPath=mask_train_files)
@@ -42,15 +49,15 @@ if __name__=="__main__":
 
     train_loader=torch.utils.data.DataLoader(
         train_dataset,
-        batch_size=4,
+        batch_size=1,
         shuffle=True,
-        num_workers=4
+        num_workers=2
     )
     test_loader=torch.utils.data.DataLoader(
         test_dataset,
         batch_size=1,
         shuffle=False,
-        num_workers=4
+        num_workers=2
     )
 
     G=models.Generator().to(config.DEVICE)
@@ -67,12 +74,21 @@ if __name__=="__main__":
 
     E=engine.Engine(PROJECT,G,D,criterion,l1loss,oD,oG,config.DEVICE)
     losses=[]
+    GLoss_arr = []
+    DLoss_arr = []
     for epoch in range(config.EPOCHS):
         train_loss=E.train(train_loader,epoch)
         print(epoch,train_loss)
         E.generate(test_loader,epoch)
         
         losses.append(train_loss)
+        GLoss_arr.append(losses[epoch][0])
+        DLoss_arr.append(losses[epoch][1])
+
+        plt.plot(GLoss_arr)
+        plt.plot(DLoss_arr)
+
+        plt.savefig('G_and_D_Loss_main.png')
         
         # break
 
