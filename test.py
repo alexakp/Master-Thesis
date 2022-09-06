@@ -6,9 +6,9 @@ def cover_img(img,mask):
     polyp_cropped = img.copy()
     for x in range(mask.shape[0]):
         for y in range(mask.shape[1]):
-            if (mask[x,y] > 20):
+            if (mask[x,y] > 128):
                 img[x,y] = [255]*3 # rgb, white color
-            elif(mask[x,y]< 20):
+            elif(mask[x,y]< 128):
                 polyp_cropped[x,y] = [255]*3
     return img, polyp_cropped
 

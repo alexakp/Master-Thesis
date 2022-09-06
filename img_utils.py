@@ -7,6 +7,7 @@ import torch.nn as nn
 from PIL import Image
 import os
 import sys
+import albumentations
 
 def cover_img(img,mask):
     polyp_cropped = img.copy()
@@ -50,13 +51,22 @@ def cover_img(img,mask):
     return 1 - img
 """     
 def save_image_from_dataloader3c(image,imagesavefolder,prefix,indx):
+    inv_aug = albumentations.Compose(
+            [
+                albumentations.Normalize(mean=(-0.55716495/0.31903088,-0.32165295/0.22265271,-0.23576912/0.18867239),
+                std=(1/0.31903088,1/0.22265271,1/0.18867239), max_pixel_value=1, always_apply=True),
+            ]
+        )
     image=image.cpu()
     image = torchvision.utils.make_grid(image)
-    #print(image.shape) # torch
-    image=(np.transpose(image.numpy().astype(np.float),(1,2,0))+1)/2 # [0.1] after this
-    #print(image.shape) # numpy
-    #print(image+[0,1,2])
-    #print('----------')
+    image = np.transpose(image.numpy().astype(np.float),(1,2,0))
+    image2 = inv_aug(image=image)["image"]
+    image=(image+1)/2 # [0.1] after this
     image=(image*255).astype(np.uint8)
-    image_pil=Image.fromarray(image)
+    image2 = (image2*255).astype(np.uint8)
+
+    image_pil=Image.fromarray(image2.astype(np.uint8))
+    image=(image*255).astype(np.uint8)
+    #image_pil=Image.fromarray(image)
+    image_pil=Image.fromarray(image2.astype(np.uint8))
     image_pil.save(os.path.join(imagesavefolder,f"{prefix}_{indx}.jpg"))

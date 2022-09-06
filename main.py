@@ -44,13 +44,13 @@ if __name__=="__main__":
         train_dataset,
         batch_size=1,
         shuffle=True,
-        num_workers=8
+        num_workers=4
     )
     test_loader=torch.utils.data.DataLoader(
         test_dataset,
         batch_size=1,
         shuffle=False,
-        num_workers=8
+        num_workers=4
     )
 
     G=models.Generator().to(config.DEVICE)

@@ -5,10 +5,10 @@ ssh -YAC2 alexakp@dnat.simula.no -p 60441
 # g001
 ssh -t -L 8001:localhost:8001 alexakp@dnat.simula.no -p 60441 ssh -L 8001:localhost:8888 g001
 
-# sync changes from desktop pc --> ex3 server
+# SYNC changes from DESKTOP-PC --> ex3 SERVERS
 rsync -avrz -e "ssh -p 60441" /c/Users/"Alexander PC hjemme"/Desktop/UiO/Master_Thesis alexakp@dnat.simula.no:D1/
 
-# sync changes from ex3 server -->  desktop pc
+# SYNC changes from ex3 SERVERS -->  DESKTOP-PC
 rsync -avrz -e "ssh -p 60441" alexakp@dnat.simula.no:D1/Master_Thesis /c/Users/"Alexander PC hjemme"/Desktop/UiO
 
 ## run sbatch on ex3

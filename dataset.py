@@ -60,19 +60,15 @@ class InfillDatasetCutout():
         
         self.aug=albumentations.Compose(
             [
-                albumentations.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5), max_pixel_value=255.0, always_apply=True)
+                albumentations.Normalize(mean=(0.55716495,0.32165295,0.23576912), std=(0.31903088,0.22265271,0.18867239), max_pixel_value=255.0, always_apply=True)
             ]
         )
         self.target_aug=albumentations.Compose(
             [
-                albumentations.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5), max_pixel_value=255.0, always_apply=True)
+                albumentations.Normalize(mean=(0.55716495,0.32165295,0.23576912), std=(0.31903088,0.22265271,0.18867239), max_pixel_value=255.0, always_apply=True)
             ]
         )
-        self.inv_aug = albumentations.Compose(
-            [
-                albumentations.Normalize(mean=(-0.5/0.5, -0.5/0.5, -0.5/0.5), std=(1/0.5, 1/0.5, 1/0.5), max_pixel_value=255.0, always_apply=True),
-            ]
-        )
+
 
 
     def __len__(self):
@@ -84,22 +80,18 @@ class InfillDatasetCutout():
 
         mask_image=Image.open(self.maskPath[item])
         mask_image=mask_image.convert("L")
-        mask_image=mask_image.resize((config.IMAGE_HEIGHT,config.IMAGE_WIDTH),resample=Image.BILINEAR)
+        mask_image=mask_image.resize((config.IMAGE_HEIGHT,config.IMAGE_WIDTH),resample=Image.NEAREST)
 
         target_image=image
-        
-        ### show image as PIL
-        # pil_image=Image.fromarray(image)
-        # pil_image.show()
 
-        # Noise/cropping perfomed here
+        # Cropping performed here
         image_arr = np.array(image)
         mask_arr = np.array(mask_image)
 
         image, _ = cover_img(image_arr, mask_arr)
 
-        image=self.aug(image=image)["image"]
-
+        # augmenting image and target image
+        image = self.aug(image=np.array(image))["image"]
         target_image=np.array(target_image)
         target_image=self.target_aug(image=target_image)["image"]
         #target_image=self.inv_aug(image=target_image)["image"]
