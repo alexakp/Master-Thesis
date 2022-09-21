@@ -5,6 +5,7 @@ Temp
 improved_diffusion.egg-info
 models
 *.npz
+*.out
 plot_info.py
 view_img.py
 plot_img.py
