@@ -5,6 +5,8 @@ output
 __pycache__
 meeting_doc
 *.png
+*.jpg
+*.csv
 .yml
 guided-diffusion
 Thesis_images
