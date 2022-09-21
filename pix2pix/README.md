@@ -1,4 +1,4 @@
-# Master Thesis
+# Pix2Pix
 
 ## TODO 
 
