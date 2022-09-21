@@ -1,0 +1,15 @@
+# Train my images
+
+MODEL_FLAGS="--image_size 64 --num_channels 128 --num_res_blocks 3 --learn_sigma True"
+DIFFUSION_FLAGS="--diffusion_steps 4000 --noise_schedule cosine"
+TRAIN_FLAGS="--lr 1e-4 --batch_size 32"
+
+# Train command
+python scripts/image_train.py --data_dir images $MODEL_FLAGS $DIFFUSION_FLAGS $TRAIN_FLAGS
+
+mpiexec -n $1 python scripts/image_train.py --data_dir images $MODEL_FLAGS $DIFFUSION_FLAGS $TRAIN_FLAGS
+##############################################################
+# Sample
+python scripts/image_sample.py --model_path Temp/openai-2022-09-17-19-01-11-516220/ema_0.9999_250000.pt $MODEL_FLAGS $DIFFUSION_FLAGS
+
+#################################

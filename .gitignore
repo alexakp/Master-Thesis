@@ -6,3 +6,5 @@ __pycache__
 meeting_doc
 *.png
 .yml
+guided-diffusion
+Thesis_images

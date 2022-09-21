@@ -6,13 +6,24 @@ ssh -YAC2 alexakp@dnat.simula.no -p 60441
 ssh -t -L 8001:localhost:8001 alexakp@dnat.simula.no -p 60441 ssh -L 8001:localhost:8888 g001
 
 # SYNC changes from DESKTOP-PC --> ex3 SERVERS
-rsync -avrz -e "ssh -p 60441" /c/Users/"Alexander PC hjemme"/Desktop/UiO/Master_Thesis alexakp@dnat.simula.no:D1/
+rsync -avrz -e "ssh -p 60441" /c/Users/"Alexander PC hjemme"/Desktop/UiO/Master_Thesis/improved-diffusion alexakp@dnat.simula.no:D1/Master_Thesis
 
 # SYNC changes from ex3 SERVERS -->  DESKTOP-PC
-rsync -avrz -e "ssh -p 60441" alexakp@dnat.simula.no:D1/Master_Thesis /c/Users/"Alexander PC hjemme"/Desktop/UiO
+rsync -avrz -e "ssh -p 60441" alexakp@dnat.simula.no:D1/Master_Thesis/improved-diffusion/Temp /c/Users/"Alexander PC hjemme"/Desktop/UiO
+
+# Download out file
+scp -P 60441 alexakp@dnat.simula.no:D1/Master_Thesis/improved-diffusion/slurm-391715.out /c/Users/"Alexander PC hjemme"/Desktop/UiO/Master_Thesis/improved-diffusion
+
+# SYNC changes from ex3 SERVERS -->  DESKTOP-PC own folder
+rsync -avrz -e "ssh -p 60441" alexakp@dnat.simula.no:D1/Master_Thesis /c/Users/"Alexander PC hjemme"/Desktop/UiO/Master_Thesis_ex3
 
 ## run sbatch on ex3
 sbatch run_script.sbatch
 
-# list req for conda env
-conda list -e > requirements.txt
+# cancel job
+scancel <jobid>
+
+# sample
+python scripts/image_sample.py --model_path Temp/openai-2022-09-19-17-01-35-513791/ema_0.9999_250000.pt $MODEL_FLAGS $DIFFUSION_FLAGS
+
+# Remove all expect 1 image from train and test to test white cropped part in dataset.py
