@@ -4,5 +4,5 @@
 - Pix2Pix (GAN)
 - Impoved Diffusion
 
-## Diffusion of polyp using 1000 steps
+## Diffusion of polyp using 1000 steps (not looped)
 ![](fp_out2.gif)
