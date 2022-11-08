@@ -7,9 +7,14 @@ Docstrings have been added, as well as DDIM sampling and a new collection of bet
 
 import enum
 import math
+import sys
+from matplotlib import pyplot as plt
+from PIL import Image
+import imageio
 
 import numpy as np
 import torch as th
+from torchvision import transforms
 
 from .nn import mean_flat
 from .losses import normal_kl, discretized_gaussian_log_likelihood
@@ -353,8 +358,54 @@ class GaussianDiffusion:
             return t.float() * (1000.0 / self.num_timesteps)
         return t
 
+    def condition_mean(self, cond_fn, p_mean_var, x, t, model_kwargs=None):
+        """
+        Compute the mean for the previous step, given a function cond_fn that
+        computes the gradient of a conditional log probability with respect to
+        x. In particular, cond_fn computes grad(log(p(y|x))), and we want to
+        condition on y.
+
+        This uses the conditioning strategy from Sohl-Dickstein et al. (2015).
+        """
+        gradient = cond_fn(x, self._scale_timesteps(t), **model_kwargs)
+        new_mean = (
+            p_mean_var["mean"].float() + p_mean_var["variance"] * gradient.float()
+        )
+        return new_mean
+
+    def condition_score(self, cond_fn, p_mean_var, x, t, model_kwargs=None):
+        """
+        Compute what the p_mean_variance output would have been, should the
+        model's score function be conditioned by cond_fn.
+
+        See condition_mean() for details on cond_fn.
+
+        Unlike condition_mean(), this instead uses the conditioning strategy
+        from Song et al (2020).
+        """
+        alpha_bar = _extract_into_tensor(self.alphas_cumprod, t, x.shape)
+
+        eps = self._predict_eps_from_xstart(x, t, p_mean_var["pred_xstart"])
+        eps = eps - (1 - alpha_bar).sqrt() * cond_fn(
+            x, self._scale_timesteps(t), **model_kwargs
+        )
+
+        out = p_mean_var.copy()
+        out["pred_xstart"] = self._predict_xstart_from_eps(x, t, eps)
+        out["mean"], _, _ = self.q_posterior_mean_variance(
+            x_start=out["pred_xstart"], x_t=x, t=t
+        )
+        return out
+
     def p_sample(
-        self, model, x, t, clip_denoised=True, denoised_fn=None, model_kwargs=None
+        self,
+        model,
+        x,
+        t,
+        clip_denoised=True,
+        denoised_fn=None,
+        cond_fn=None,
+        model_kwargs=None,
     ):
         """
         Sample x_{t-1} from the model at the given timestep.
@@ -365,6 +416,8 @@ class GaussianDiffusion:
         :param clip_denoised: if True, clip the x_start prediction to [-1, 1].
         :param denoised_fn: if not None, a function which applies to the
             x_start prediction before it is used to sample.
+        :param cond_fn: if not None, this is a gradient function that acts
+                        similarly to the model.
         :param model_kwargs: if not None, a dict of extra keyword arguments to
             pass to the model. This can be used for conditioning.
         :return: a dict containing the following keys:
@@ -383,6 +436,11 @@ class GaussianDiffusion:
         nonzero_mask = (
             (t != 0).float().view(-1, *([1] * (len(x.shape) - 1)))
         )  # no noise when t == 0
+        if cond_fn is not None:
+            out["mean"] = self.condition_mean(
+                cond_fn, out, x, t, model_kwargs=model_kwargs
+            )
+
         sample = out["mean"] + nonzero_mask * th.exp(0.5 * out["log_variance"]) * noise
         return {"sample": sample, "pred_xstart": out["pred_xstart"]}
 
@@ -393,6 +451,7 @@ class GaussianDiffusion:
         noise=None,
         clip_denoised=True,
         denoised_fn=None,
+        cond_fn=None,
         model_kwargs=None,
         device=None,
         progress=False,
@@ -407,6 +466,8 @@ class GaussianDiffusion:
         :param clip_denoised: if True, clip x_start predictions to [-1, 1].
         :param denoised_fn: if not None, a function which applies to the
             x_start prediction before it is used to sample.
+        :param cond_fn: if not None, this is a gradient function that acts
+                        similarly to the model.
         :param model_kwargs: if not None, a dict of extra keyword arguments to
             pass to the model. This can be used for conditioning.
         :param device: if specified, the device to create the samples on.
@@ -421,6 +482,7 @@ class GaussianDiffusion:
             noise=noise,
             clip_denoised=clip_denoised,
             denoised_fn=denoised_fn,
+            cond_fn=cond_fn,
             model_kwargs=model_kwargs,
             device=device,
             progress=progress,
@@ -435,6 +497,7 @@ class GaussianDiffusion:
         noise=None,
         clip_denoised=True,
         denoised_fn=None,
+        cond_fn=None,
         model_kwargs=None,
         device=None,
         progress=False,
@@ -453,28 +516,98 @@ class GaussianDiffusion:
         if noise is not None:
             img = noise
         else:
+            # Goes here by default
             img = th.randn(*shape, device=device)
         indices = list(range(self.num_timesteps))[::-1]
 
-        if progress:
-            # Lazy import so that we don't depend on tqdm.
-            from tqdm.auto import tqdm
+        print("We are using p_sample_loop_progressive")
+        """sample = img.permute(0, 2, 3, 1)
+        sample = sample.contiguous()
+        arr = sample.cpu().numpy()
+        arr = arr[0]
+        print(th.min(img))
+        print(arr)
+        img1 = Image.open('noise1.jpg')
+        img2 = Image.open('noise2.jpg')"""
 
-            indices = tqdm(indices)
+        th.manual_seed(2)
+        img1 = th.randn(*shape, device=device)
+        th.manual_seed(1)
+        img2 = th.randn(*shape, device=device)
+        print(th.mean(img1))
+        print(th.mean(img2))
+        print(th.std(img1))
+        print(th.std(img2))
 
-        for i in indices:
-            t = th.tensor([i] * shape[0], device=device)
-            with th.no_grad():
-                out = self.p_sample(
-                    model,
-                    img,
-                    t,
-                    clip_denoised=clip_denoised,
-                    denoised_fn=denoised_fn,
-                    model_kwargs=model_kwargs,
-                )
-                yield out
-                img = out["sample"]
+        #img_to_tensor1 = ((transforms.PILToTensor()(img1).to(float) - 127.5) / 63.75)
+        #img_to_tensor2 = ((transforms.PILToTensor()(img2).to(float) - 127.5) / 63.75)
+        interpolation_steps = 150
+        interpolated_encodings = (tensor_linspace(img1, img2, interpolation_steps)).squeeze()
+        for int_i in range(interpolation_steps):
+            th.manual_seed(0)
+
+        # read in custom noise, clamp to mean 0 makes sence and +-1 or variance should be 1?
+        #int_i = 8
+
+            """img = np.asarray(Image.open(f'frame_interpolation/photos/interpolated_frames/frame_00{int_i}.png'))
+            #img = th.from_numpy(((img - 255) / 255)).clamp(-4, 4).to(th.float32)
+            img = th.from_numpy(((img - 127.5) / 127.5)).clamp(-1, 1).to(th.float32)
+            img = img * 2
+            print(img.shape)
+            img = th.unsqueeze(img,-1)
+            img = img.permute(3, 2, 0, 1)
+            img = img.to(device=device)
+            print(img.shape)"""
+
+            img = th.unsqueeze(interpolated_encodings[:,:,:,int_i],0)
+            img = img.to(device=device).to(th.float)
+
+            print(f'Mean for img {int_i}: {th.mean(img)}')
+            print(f'Standard deviation for img {int_i}: {th.std(img)}')
+
+            if progress:
+                # Lazy import so that we don't depend on tqdm.
+                from tqdm.auto import tqdm
+
+                indices = tqdm(indices)
+
+            intermediate_img_matplot = []
+            intermediate_img_pil = {}
+            all_imgs = []
+            make_intermediate_and_gif = True
+            for i in indices:
+                t = th.tensor([i] * shape[0], device=device)
+                with th.no_grad():
+                    out = self.p_sample(
+                        model,
+                        img,
+                        t,
+                        clip_denoised=clip_denoised,
+                        denoised_fn=denoised_fn,
+                        cond_fn=cond_fn,
+                        model_kwargs=model_kwargs,
+                    )
+                    yield out
+                    #sample = out["pred_xstart"]
+                    if(make_intermediate_and_gif):
+                        sample = out["sample"]
+                        # assume batch size of 1,
+                        sample = ((sample + 1) * 127.5).clamp(0, 255).to(th.uint8)
+                        sample = sample.permute(0, 2, 3, 1)
+                        sample = sample.contiguous()
+                        arr = sample.cpu().numpy()
+                        all_imgs.append((Image.fromarray(arr[0], 'RGB')))
+                        if(i==0): 
+                            intermediate_img_matplot.append(arr[0])
+                            intermediate_img_pil[i] = (Image.fromarray(arr[0], 'RGB')) # added here
+                    img = out["sample"]
+
+            if(make_intermediate_and_gif):
+                #all_imgs[0].save(fp=f"generated_imgs/fp_out_{int_i}.gif", format='GIF', append_images=all_imgs, save_all=True, duration=len(all_imgs)/30)
+                for key, value in intermediate_img_pil.items():
+                    value.save(f'generated_imgs/Diffusion_step{key}_{int_i}_img_size_128x128.jpg') # change to .eps for PDF
+                    value.save(f'generated_imgs/Diffusion_step{key}_{int_i}_eps_img_size_128x128.eps') # change to .eps for PDF
+
 
     def ddim_sample(
         self,
@@ -483,6 +616,7 @@ class GaussianDiffusion:
         t,
         clip_denoised=True,
         denoised_fn=None,
+        cond_fn=None,
         model_kwargs=None,
         eta=0.0,
     ):
@@ -499,9 +633,13 @@ class GaussianDiffusion:
             denoised_fn=denoised_fn,
             model_kwargs=model_kwargs,
         )
+        if cond_fn is not None:
+            out = self.condition_score(cond_fn, out, x, t, model_kwargs=model_kwargs)
+
         # Usually our model outputs epsilon, but we re-derive it
         # in case we used x_start or x_prev prediction.
         eps = self._predict_eps_from_xstart(x, t, out["pred_xstart"])
+
         alpha_bar = _extract_into_tensor(self.alphas_cumprod, t, x.shape)
         alpha_bar_prev = _extract_into_tensor(self.alphas_cumprod_prev, t, x.shape)
         sigma = (
@@ -534,6 +672,7 @@ class GaussianDiffusion:
         """
         Sample x_{t+1} from the model using DDIM reverse ODE.
         """
+        print("ddim_reverse_sample")
         assert eta == 0.0, "Reverse ODE only for deterministic path"
         out = self.p_mean_variance(
             model,
@@ -566,6 +705,7 @@ class GaussianDiffusion:
         noise=None,
         clip_denoised=True,
         denoised_fn=None,
+        cond_fn=None,
         model_kwargs=None,
         device=None,
         progress=False,
@@ -583,6 +723,7 @@ class GaussianDiffusion:
             noise=noise,
             clip_denoised=clip_denoised,
             denoised_fn=denoised_fn,
+            cond_fn=cond_fn,
             model_kwargs=model_kwargs,
             device=device,
             progress=progress,
@@ -598,6 +739,7 @@ class GaussianDiffusion:
         noise=None,
         clip_denoised=True,
         denoised_fn=None,
+        cond_fn=None,
         model_kwargs=None,
         device=None,
         progress=False,
@@ -618,6 +760,20 @@ class GaussianDiffusion:
             img = th.randn(*shape, device=device)
         indices = list(range(self.num_timesteps))[::-1]
 
+        print("We are using ddim_sample_loop_progressive")
+        
+        ####
+        """sample = img.permute(0, 2, 3, 1)
+        sample = sample.contiguous()
+        arr = sample.cpu().numpy()
+        arr = arr[0]
+        print(th.min(img))
+
+        img = th.from_numpy(arr)
+        img = th.unsqueeze(img,-1)
+        img = img.permute(3, 2, 0, 1)
+        img = img.to(device=device).clamp(-1, 1)"""
+
         if progress:
             # Lazy import so that we don't depend on tqdm.
             from tqdm.auto import tqdm
@@ -633,12 +789,18 @@ class GaussianDiffusion:
                     t,
                     clip_denoised=clip_denoised,
                     denoised_fn=denoised_fn,
+                    cond_fn=cond_fn,
                     model_kwargs=model_kwargs,
                     eta=eta,
                 )
                 yield out
                 img = out["sample"]
-
+        sample = ((img + 1) * 127.5).clamp(0, 255).to(th.uint8)
+        sample = sample.permute(0, 2, 3, 1)
+        sample = sample.contiguous()
+        arr = sample.cpu().numpy()
+        img = Image.fromarray(arr[0], 'RGB')
+        img.save('ddim_img.jpg')
     def _vb_terms_bpd(
         self, model, x_start, x_t, t, clip_denoised=True, model_kwargs=None
     ):
@@ -839,3 +1001,32 @@ def _extract_into_tensor(arr, timesteps, broadcast_shape):
     while len(res.shape) < len(broadcast_shape):
         res = res[..., None]
     return res.expand(broadcast_shape)
+
+def tensor_linspace(start, end, steps=5):
+    """
+    Vectorized version of torch.linspace.
+    Inputs:
+    - start: Tensor of any shape
+    - end: Tensor of the same shape as start
+    - steps: Integer
+    Returns:
+    - out: Tensor of shape start.size() + (steps,), such that
+      out.select(-1, 0) == start, out.select(-1, -1) == end,
+      and the other elements of out linearly interpolate between
+      start and end.
+    """
+    assert start.size() == end.size()
+    view_size = start.size() + (1,)
+    w_size = (1,) * start.dim() + (steps,)
+    out_size = start.size() + (steps,)
+
+    start_w = th.linspace(1, 0, steps=steps).to(start)
+    start_w = start_w.view(w_size).expand(out_size)
+    end_w = th.linspace(0, 1, steps=steps).to(start)
+    end_w = end_w.view(w_size).expand(out_size)
+
+    start = start.contiguous().view(view_size).expand(out_size)
+    end = end.contiguous().view(view_size).expand(out_size)
+
+    out = start_w * start + end_w * end
+    return out

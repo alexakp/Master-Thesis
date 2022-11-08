@@ -14,6 +14,9 @@ import tempfile
 import warnings
 from collections import defaultdict
 from contextlib import contextmanager
+import wandb
+
+from guided_diffusion.train_util import TrainLoop
 
 DEBUG = 10
 INFO = 20
@@ -371,6 +374,7 @@ class Logger(object):
                 fmt.writekvs(d)
         self.name2val.clear()
         self.name2cnt.clear()
+        # wandb.log(dict(out)) # Log to wandb
         return out
 
     def log(self, *args, level=INFO):
@@ -443,7 +447,7 @@ def configure(dir=None, format_strs=None, comm=None, log_suffix=""):
     """
     If comm is provided, average all numerical stats across that comm
     """
-
+    
     path = os.getcwd()
     dirName = 'Temp'
     try:

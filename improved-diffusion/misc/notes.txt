@@ -1,5 +1,0 @@
-Unconditional diffusion on Kvasir SEG non-segmented images, image size 32x32, images = 1000
-
-after 10000 steps noise
-after 50000 polyp with no surroindings
-after 250000 fairly good synth
