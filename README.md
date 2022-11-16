@@ -9,3 +9,8 @@
 
 ## Diffusion of polyp using 250 steps, and 148 interpolated images between noise img1 and noise img 2 (total 150 images).
 ![](polyp.gif)
+
+
+## Update after meeting 16.11.2022
+
+D:/Simula_data/Models/Temp/openai-2022-11-14-23-44-04-807734/ema_0.9999_020000.pt is an example of a diffusion model only trained on clean images. 
