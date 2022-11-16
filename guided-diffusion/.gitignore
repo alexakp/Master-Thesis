@@ -7,3 +7,4 @@ frame_interpolation
 Temp
 wandb
 generated_imgs
+crop_polyps.py

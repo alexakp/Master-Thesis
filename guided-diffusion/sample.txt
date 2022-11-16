@@ -7,9 +7,9 @@ python scripts/image_sample.py --model_path models/ema_0.9999_050000.pt $MODEL_F
 #####
 
 DIFFUSION_FLAGS="--diffusion_steps 1000 --noise_schedule linear"
-MODEL_FLAGS="--class_cond True --image_size 128 --num_channels 128 --num_heads 4 --num_res_blocks 2 --learn_sigma True --resblock_updown True --use_fp16 True --use_scale_shift_norm True --rescale_learned_sigmas False"
+MODEL_FLAGS="--image_size 128 --num_channels 128 --num_heads 4 --num_res_blocks 2 --learn_sigma True --resblock_updown True --use_fp16 True --use_scale_shift_norm True --rescale_learned_sigmas False"
 
-python scripts/image_sample.py --model_path D:/Simula_data/Models/Temp/openai-2022-10-17-18-18-19-941079/ema_0.9999_050000.pt $MODEL_FLAGS $DIFFUSION_FLAGS
+python scripts/image_sample.py --model_path D:/Simula_data/Models/Temp/openai-2022-11-11-17-18-51-309112/ema_0.9999_050000.pt $MODEL_FLAGS $DIFFUSION_FLAGS
 
 
 

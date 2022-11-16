@@ -20,7 +20,7 @@ import wandb
 
 def main():
     args = create_argparser().parse_args()
-    #wandb.init(project="Alexander_Thesis_Simula", entity="alexakp-thesis",config=vars(args))
+    wandb.init(project="Alexander_Thesis_Simula", entity="alexakp-thesis",config=vars(args))
 
     dist_util.setup_dist()
     logger.configure()

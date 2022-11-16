@@ -374,7 +374,7 @@ class Logger(object):
                 fmt.writekvs(d)
         self.name2val.clear()
         self.name2cnt.clear()
-        # wandb.log(dict(out)) # Log to wandb
+        wandb.log(dict(out)) # Log to wandb
         return out
 
     def log(self, *args, level=INFO):

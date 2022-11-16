@@ -7,6 +7,9 @@ meeting_doc
 *.png
 *.jpg
 *.csv
+*.eps
+*.gif
+*.pt
 .yml
 Thesis_images
 small_ddpm_test

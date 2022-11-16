@@ -15,8 +15,6 @@ from .fp16_util import MixedPrecisionTrainer
 from .nn import update_ema
 from .resample import LossAwareSampler, UniformSampler
 
-import wandb
-
 # For ImageNet experiments, this was a good default value.
 # We found that the lg_loss_scale quickly climbed to
 # 20-21 within the first ~1K steps of training.
@@ -64,7 +62,7 @@ class TrainLoop:
         self.lr_anneal_steps = lr_anneal_steps
 
         self.step = 0
-        self.total_steps = 60000 # SET how many total stesps to run
+        self.total_steps = 60000 # SET TODO how many total stesps to run
         self.resume_step = 0
         self.global_batch = self.batch_size * dist.get_world_size()
 

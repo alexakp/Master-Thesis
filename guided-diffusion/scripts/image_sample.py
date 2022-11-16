@@ -82,14 +82,14 @@ def main():
 
 
     # img shown here remove this for testing
-    """
+
     tmp = arr[0] # added here
     plt.imshow(tmp)
     plt.show()
     ################
     tmp = arr[0] # added here
-    img = Image.fromarray(tmp, 'RGB')"""
-    #img.save('Generated_img_64/my.png')
+    img = Image.fromarray(tmp, 'RGB')
+    img.save(r'C:\Users\Alexander PC hjemme\Desktop\UiO\Master_Thesis\RePaint\data\datasets\gts\polyp\my.png')
     #img.show()
     if args.class_cond:
         label_arr = np.concatenate(all_labels, axis=0)
@@ -113,8 +113,8 @@ def main():
 def create_argparser():
     defaults = dict(
         clip_denoised=True,
-        num_samples=100,
-        batch_size=4,
+        num_samples=1,
+        batch_size=1,
         use_ddim=False,
         model_path="",
     )
