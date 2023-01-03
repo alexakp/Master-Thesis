@@ -23,7 +23,7 @@ from matplotlib import pyplot as plt
 
 
 
-img1 =  np.array(Image.open('data\datasets\gts\polyp\my.png'))
+img1 =  np.array(Image.open('data\datasets\gts\polyp\\99.png'))
 
 #mask1 = np.array(Image.open('log\\polyp_background_inpaint\gt_keep_mask\your_file.png').convert('1'))
 
@@ -40,7 +40,7 @@ def cover_img(img):
     else:
         for i in range(img.shape[0]):
             for j in range(img.shape[1]):
-                if(img[i,j,0] < 5 and img[i,j,1] < 5 and img[i,j,2] < 5):
+                if(img[i,j,0] < 20 and img[i,j,1] < 20 and img[i,j,2] < 20):
                     img[i,j] = [0]*3
                 else:
                     img[i,j] = [255]*3
@@ -51,4 +51,4 @@ def cover_img(img):
 
 finale = cover_img(img1)
 im = Image.fromarray(finale)
-im.save(f"data/datasets/gt_keep_masks/polyp/my.png")
+im.save(f"data/datasets/gt_keep_masks/polyp/99.png")

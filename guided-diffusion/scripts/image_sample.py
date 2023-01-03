@@ -6,6 +6,7 @@ numpy array. This can be used to produce samples for FID evaluation.
 import argparse
 import os
 import sys
+import time
 
 
 import numpy as np
@@ -81,15 +82,16 @@ def main():
     arr = arr[: args.num_samples]
 
 
-    # img shown here remove this for testing
+    """
+    #img shown here remove this for testing
 
     tmp = arr[0] # added here
     plt.imshow(tmp)
-    plt.show()
+    #plt.show()
     ################
     tmp = arr[0] # added here
     img = Image.fromarray(tmp, 'RGB')
-    img.save(r'C:\Users\Alexander PC hjemme\Desktop\UiO\Master_Thesis\RePaint\data\datasets\gts\polyp\my.png')
+    """
     #img.show()
     if args.class_cond:
         label_arr = np.concatenate(all_labels, axis=0)
@@ -113,8 +115,8 @@ def main():
 def create_argparser():
     defaults = dict(
         clip_denoised=True,
-        num_samples=1,
-        batch_size=1,
+        num_samples=100,
+        batch_size=16,
         use_ddim=False,
         model_path="",
     )
@@ -125,4 +127,6 @@ def create_argparser():
 
 
 if __name__ == "__main__":
+    start_time = time.time()
     main()
+    print("--- %s seconds ---" % (time.time() - start_time))

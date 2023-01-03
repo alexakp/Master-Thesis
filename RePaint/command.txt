@@ -3,3 +3,7 @@ python test.py --conf_path confs/inpaint_cond.yml
 python test.py --conf_path confs/polyp_inpaint.yml
 
 python test.py --conf_path confs/inpaint_background.yml
+
+python test.py --conf_path confs/inpaint_pathological-findings.yml
+
+python test.py --conf_path confs/inpaint_anatomical-landmarks.yml
