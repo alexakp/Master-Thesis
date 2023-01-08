@@ -1,8 +1,8 @@
-# Master Thesis for image synthesis 
+# Master Thesis for Image Synthesis 
 
 ## GAN and Diffusion models 
 - Pix2Pix (GAN) (probably not gonna be used) 
-- Guided Diffusion, to see how to train a custom dataset look at https://github.com/openai/improved-diffusion
+- Diffusion based models, to see how to train a custom dataset look at https://github.com/openai/improved-diffusion
 
 # Step-by-step guide for the methodology used (Training)
 
