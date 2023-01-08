@@ -14,6 +14,7 @@ from matplotlib import pyplot as plt
 import torch as th
 import torch.distributed as dist
 from PIL import Image
+import wandb
 
 from guided_diffusion import dist_util, logger
 from guided_diffusion.script_util import (
@@ -27,10 +28,14 @@ from guided_diffusion.script_util import (
 
 def main():
     args = create_argparser().parse_args()
+    var_args = vars(args)
+    wandb.init(project="Diffusion_sampling", entity="alexakp-thesis",config=vars(args))
+
 
     dist_util.setup_dist()
     logger.configure()
 
+    logger.log(f"Model sampled from {var_args['model_path']}")
     logger.log("creating model and diffusion...")
     model, diffusion = create_model_and_diffusion(
         **args_to_dict(args, model_and_diffusion_defaults().keys())
@@ -77,6 +82,7 @@ def main():
             dist.all_gather(gathered_labels, classes)
             all_labels.extend([labels.cpu().numpy() for labels in gathered_labels])
         logger.log(f"created {len(all_images) * args.batch_size} samples")
+        wandb.log({'Current_samples':(len(all_images) * args.batch_size)})
 
     arr = np.concatenate(all_images, axis=0)
     arr = arr[: args.num_samples]
@@ -115,8 +121,8 @@ def main():
 def create_argparser():
     defaults = dict(
         clip_denoised=True,
-        num_samples=100,
-        batch_size=16,
+        num_samples=100, # 100
+        batch_size=16, # 16
         use_ddim=False,
         model_path="",
     )

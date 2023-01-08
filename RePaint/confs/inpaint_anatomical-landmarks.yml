@@ -79,7 +79,7 @@ data:
       batch_size: 1
       return_dataloader: true
       offset: 0
-      max_len: 2
+      max_len: 1
       paths:
         srs: ./log/inpaint_anatomical-landmarks/inpainted
         lrs: ./log/inpaint_anatomical-landmarks/gt_masked

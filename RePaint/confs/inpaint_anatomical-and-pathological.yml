@@ -14,7 +14,7 @@
 #
 # This repository was forked from https://github.com/openai/guided-diffusion, which is under the MIT license
 
-attention_resolutions: 16,8
+attention_resolutions: 32,16,8
 class_cond: false
 diffusion_steps: 1000
 learn_sigma: true
@@ -52,8 +52,9 @@ use_ddim: false
 latex_name: RePaint
 method_name: Repaint
 image_size: 128
-model_path: D:/Simula_data/Models/Temp/openai-2022-12-26-18-07-56-458122/ema_0.9999_050000.pt
-name: inpaint_pathological-findings
+#model_path: D:/Simula_data/Models/Temp/openai-2023-01-08-00-53-28-347773/ema_0.9999_040000.pt
+model_path: /home/alexakp/D1/Master_Thesis/guided-diffusion/Temp/openai-2023-01-08-00-53-28-347773/ema_0.9999_050000.pt
+name: inpaint_anatomical-and-pathological
 inpa_inj_sched_prev: true
 n_jobs: 1
 print_estimated_vars: true
@@ -76,12 +77,12 @@ data:
       random_flip: false
       return_dict: true
       drop_last: false
-      batch_size: 1
+      batch_size: 32
       return_dataloader: true
       offset: 0
-      max_len: 2
+      max_len: 100
       paths:
-        srs: ./log/inpaint_pathological-findings/inpainted
-        lrs: ./log/inpaint_pathological-findings/gt_masked
-        gts: ./log/inpaint_pathological-findings/gt
-        gt_keep_masks: ./log/inpaint_pathological-findings/gt_keep_mask
+        srs: ./log/inpaint_anatomical-and-pathological/inpainted
+        lrs: ./log/inpaint_anatomical-and-pathological/gt_masked
+        gts: ./log/inpaint_anatomical-and-pathological/gt
+        gt_keep_masks: ./log/inpaint_anatomical-and-pathological/gt_keep_mask
