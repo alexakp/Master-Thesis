@@ -62,7 +62,7 @@ class TrainLoop:
         self.lr_anneal_steps = lr_anneal_steps
 
         self.step = 0
-        self.total_steps = 60000 # SET TODO how many total stesps to run
+        self.total_steps = 80000 # SET TODO how many total stesps to run
         self.resume_step = 0
         self.global_batch = self.batch_size * dist.get_world_size()
 

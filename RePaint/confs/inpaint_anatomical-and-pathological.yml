@@ -52,8 +52,8 @@ use_ddim: false
 latex_name: RePaint
 method_name: Repaint
 image_size: 128
-#model_path: D:/Simula_data/Models/Temp/openai-2023-01-08-00-53-28-347773/ema_0.9999_040000.pt
-model_path: /home/alexakp/D1/Master_Thesis/guided-diffusion/Temp/openai-2023-01-08-00-53-28-347773/ema_0.9999_050000.pt
+model_path: D:/Simula_data/Models/Temp/openai-2023-01-08-00-53-28-347773/ema_0.9999_040000.pt
+#model_path: /home/alexakp/D1/Master_Thesis/guided-diffusion/Temp/openai-2023-01-08-00-53-28-347773/ema_0.9999_040000.pt
 name: inpaint_anatomical-and-pathological
 inpa_inj_sched_prev: true
 n_jobs: 1
@@ -77,10 +77,10 @@ data:
       random_flip: false
       return_dict: true
       drop_last: false
-      batch_size: 32
+      batch_size: 1
       return_dataloader: true
       offset: 0
-      max_len: 100
+      max_len: 1
       paths:
         srs: ./log/inpaint_anatomical-and-pathological/inpainted
         lrs: ./log/inpaint_anatomical-and-pathological/gt_masked

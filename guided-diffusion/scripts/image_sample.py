@@ -29,7 +29,7 @@ from guided_diffusion.script_util import (
 def main():
     args = create_argparser().parse_args()
     var_args = vars(args)
-    wandb.init(project="Diffusion_sampling", entity="alexakp-thesis",config=vars(args))
+    #wandb.init(project="Diffusion_sampling", entity="alexakp-thesis",config=vars(args))
 
 
     dist_util.setup_dist()
@@ -82,7 +82,7 @@ def main():
             dist.all_gather(gathered_labels, classes)
             all_labels.extend([labels.cpu().numpy() for labels in gathered_labels])
         logger.log(f"created {len(all_images) * args.batch_size} samples")
-        wandb.log({'Current_samples':(len(all_images) * args.batch_size)})
+        #wandb.log({'Current_samples':(len(all_images) * args.batch_size)})
 
     arr = np.concatenate(all_images, axis=0)
     arr = arr[: args.num_samples]
@@ -121,8 +121,8 @@ def main():
 def create_argparser():
     defaults = dict(
         clip_denoised=True,
-        num_samples=100, # 100
-        batch_size=16, # 16
+        num_samples=1, # 100
+        batch_size=1, # 16
         use_ddim=False,
         model_path="",
     )

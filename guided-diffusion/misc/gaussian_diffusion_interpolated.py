@@ -541,7 +541,7 @@ class GaussianDiffusion:
 
         #img_to_tensor1 = ((transforms.PILToTensor()(img1).to(float) - 127.5) / 63.75)
         #img_to_tensor2 = ((transforms.PILToTensor()(img2).to(float) - 127.5) / 63.75)
-        interpolation_steps = 150
+        interpolation_steps = 10
         interpolated_encodings = (tensor_linspace(img1, img2, interpolation_steps)).squeeze()
         for int_i in range(interpolation_steps):
             th.manual_seed(0)
