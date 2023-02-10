@@ -62,7 +62,7 @@ class TrainLoop:
         self.lr_anneal_steps = lr_anneal_steps
 
         self.step = 0
-        self.total_steps = 80000 # SET TODO how many total stesps to run
+        self.total_steps = 30000 # SET TODO how many total stesps to run
         self.resume_step = 0
         self.global_batch = self.batch_size * dist.get_world_size()
 
@@ -167,7 +167,7 @@ class TrainLoop:
                 time_used = time.time() - start_time
                 print(f"Time used for {self.log_interval} steps: {time_used} seconds" )
                 start_time = time.time()
-            if ((self.step % self.save_interval == 0) and (self.step > -1)): # save models after 49000.
+            if ((self.step % self.save_interval == 0) and (self.step > 1)): # save models after 1.
                 self.save()
                 # Run for a finite amount of time in integration tests.
                 if os.environ.get("DIFFUSION_TRAINING_TEST", "") and self.step > 0:

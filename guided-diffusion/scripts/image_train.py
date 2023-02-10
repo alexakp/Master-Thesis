@@ -20,7 +20,7 @@ import wandb
 
 def main():
     args = create_argparser().parse_args()
-    wandb.init(project="Alexander_Thesis_Simula", entity="alexakp-thesis",config=vars(args))
+    #wandb.init(project="Alexander_Thesis_Simula", entity="alexakp-thesis",config=vars(args))
 
     dist_util.setup_dist()
     logger.configure()
@@ -71,7 +71,7 @@ def create_argparser():
         microbatch=-1,  # -1 disables microbatches
         ema_rate="0.9999",  # comma-separated list of EMA values
         log_interval=100, # TODO change back to 100 when training to save time and redundancy and just inlcude 1*10^2 in plot 
-        save_interval=10000,
+        save_interval=2000,
         resume_checkpoint="",
         use_fp16=False,
         fp16_scale_growth=1e-3,

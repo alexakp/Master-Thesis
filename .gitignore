@@ -27,3 +27,6 @@ guided-diffusion/transform_dataset.py
 guided-diffusion/view_img.py
 !RePaint/data/datasets/gt_keep_masks/polyp/my.png
 !RePaint/data/datasets/gts/polyp/my.png
+Vajira_GAN
+DDNM
+RCDM

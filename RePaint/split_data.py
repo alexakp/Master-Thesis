@@ -34,5 +34,7 @@ def cover_dataset():
         im = Image.fromarray(img) 
         #print(main_folder+folder1+polyp_folder+file_name)
         im.save(path+file_name)
+        sys.exit()
+
 
 finale = cover_dataset()

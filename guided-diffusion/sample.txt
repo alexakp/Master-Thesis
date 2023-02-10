@@ -9,15 +9,19 @@ python scripts/image_sample.py --model_path models/ema_0.9999_050000.pt $MODEL_F
 DIFFUSION_FLAGS="--diffusion_steps 1000 --noise_schedule linear"
 MODEL_FLAGS="--image_size 128 --num_channels 128 --num_heads 4 --num_res_blocks 2 --learn_sigma True --resblock_updown True --use_fp16 True --use_scale_shift_norm True --rescale_learned_sigmas False"
 
-python scripts/image_sample.py --model_path D:/Simula_data/Models/Temp/openai-2022-11-11-17-18-51-309112/ema_0.9999_050000.pt $MODEL_FLAGS $DIFFUSION_FLAGS
+python scripts/image_sample.py --model_path D:/Simula_data/Models/Temp/openai-2023-01-08-00-53-28-347773/ema_0.9999_050000.pt $MODEL_FLAGS $DIFFUSION_FLAGS
 
 #### ORORORORORO
 
 DIFFUSION_FLAGS="--diffusion_steps 1000 --noise_schedule linear"
-MODEL_FLAGS="--image_size 128 --num_channels 128 --num_heads 4 --num_res_blocks 2 --learn_sigma True --resblock_updown True --use_fp16 True --use_scale_shift_norm True --rescale_learned_sigmas False"
+MODEL_FLAGS="--attention_resolutions 32,16,8 --image_size 128 --num_channels 128 --num_heads 4 --num_res_blocks 2 --learn_sigma True --resblock_updown True --use_fp16 True --use_scale_shift_norm True --rescale_learned_sigmas False"
 
-python scripts/image_sample.py --model_path D:/Simula_data/Models/Temp/openai-2022-11-12-20-15-52-059253/ema_0.9999_050000.pt $MODEL_FLAGS $DIFFUSION_FLAGS
+python scripts/image_sample.py --model_path D:/Simula_data/Models/Temp/openai-2023-01-08-00-53-28-347773/ema_0.9999_050000.pt $MODEL_FLAGS $DIFFUSION_FLAGS
 
+MODEL_FLAGS="--attention_resolutions 32,16,8 --image_size 128 --num_channels 128 --num_heads 4 --num_res_blocks 2 --learn_sigma True --resblock_updown True --use_fp16 True --use_scale_shift_norm True"
+DIFFUSION_FLAGS="--diffusion_steps 750 --noise_schedule cosine --rescale_learned_sigmas False --rescale_timesteps True"
+
+python scripts/image_sample.py --model_path D:/Simula_data/Models/Temp/openai-2023-02-02-17-31-34-141811/ema_0.9999_008000.pt $MODEL_FLAGS $DIFFUSION_FLAGS
 
 
 ###
