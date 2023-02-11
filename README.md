@@ -1,13 +1,13 @@
 # Master Thesis for Image Synthesis 
 
-## ~~GAN and~~ Diffusion models 
-- ~~Pix2Pix (GAN) (probably not gonna be used)~~ 
+## ~~GAN and~~ Diffusion models :heart:
+- ~~Pix2Pix (GAN)~~ :satisfied::wave: 
 - Diffusion based models, to see how to train a custom dataset look at https://github.com/openai/improved-diffusion
 
 ## Datasets used
 https://datasets.simula.no/hyper-kvasir/
-### Unlabeled part of Hyper-Kvasir 99,417
-### Kvasir-SEG 1000 polyp images with their corresponding mask.
+### Unlabeled part of Hyper-Kvasir 99,417 :raised_hands:
+### Kvasir-SEG 1000 polyp images with their corresponding mask :mag_right:
 
 # Step-by-step guide for generating complete polyp images
 
