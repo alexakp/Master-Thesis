@@ -1,0 +1,54 @@
+
+### login Simula
+ssh -YAC2 alexakp@dnat.simula.no -p 60441
+
+# g001
+ssh -t -L 8001:localhost:8001 alexakp@dnat.simula.no -p 60441 ssh -L 8001:localhost:8888 g001
+
+# SYNC changes from DESKTOP-PC --> ex3 SERVERS
+rsync -avrz -e "ssh -p 60441" /c/Users/"Alexander PC hjemme"/Desktop/UiO/Master_Thesis/guided-diffusion alexakp@dnat.simula.no:D1/Master_Thesis
+rsync -avrz -e "ssh -p 60441" /c/Users/"Alexander PC hjemme"/Desktop/UiO/Master_Thesis/guided-diffusion/run_script_pathological-and-anatomical-landmarks.sbatch alexakp@dnat.simula.no:D1/Master_Thesis/guided-diffusion
+
+rsync -avrz -e "ssh -p 60441" /c/Users/"Alexander PC hjemme"/Desktop/UiO/Master_Thesis/guided-diffusion/guided_diffusion alexakp@dnat.simula.no:D1/Master_Thesis/guided-diffusion
+rsync -avrz -e "ssh -p 60441" /c/Users/"Alexander PC hjemme"/Desktop/UiO/Master_Thesis/guided-diffusion/scripts alexakp@dnat.simula.no:D1/Master_Thesis/guided-diffusion
+rsync -avrz -e "ssh -p 60441" /c/Users/"Alexander PC hjemme"/Desktop/UiO/Master_Thesis/RePaint/confs/inpaint_anatomical-and-pathological.yml alexakp@dnat.simula.no:D1/Master_Thesis/RePaint/confs
+
+
+
+# single file 
+rsync -avrz -e "ssh -p 60441" /c/Users/"Alexander PC hjemme"/Desktop/UiO/Master_Thesis/guided-diffusion/run_script_pathological-findings.sbatch alexakp@dnat.simula.no:D1/Master_Thesis/guided-diffusion
+
+rsync -avrz -e "ssh -p 60441" /c/Users/"Alexander PC hjemme"/Desktop/UiO/Master_Thesis/guided-diffusion/run_script_anatomical-landmarks.sbatch alexakp@dnat.simula.no:D1/Master_Thesis/guided-diffusion
+
+
+
+
+rsync -avrz -e "ssh -p 60441" /d/Simula_data/hyper-kvasir/labeled-images/lower-gi-tract/anatomical-landmarks alexakp@dnat.simula.no:D1/Master_Thesis/guided-diffusion/class_cond_images
+
+# SYNC changes from ex3 SERVERS -->  DESKTOP-PC
+rsync -avrz -e "ssh -p 60441" alexakp@dnat.simula.no:D1/Master_Thesis/guided-diffusion/Temp /d/Simula_data/Models
+
+rsync -avrz -e "ssh -p 60441" alexakp@dnat.simula.no:D1/Master_Thesis/RePaint/log /d/Simula_data/Models
+
+# Download out file
+scp -P 60441 alexakp@dnat.simula.no:D1/Master_Thesis/guided-diffusion/slurm-397386.out /c/Users/"Alexander PC hjemme"/Desktop/UiO/Master_Thesis/guided-diffusion
+
+# SYNC changes from ex3 SERVERS -->  DESKTOP-PC own folder
+rsync -avrz -e "ssh -p 60441" alexakp@dnat.simula.no:D1/Master_Thesis /c/Users/"Alexander PC hjemme"/Desktop/UiO/Master_Thesis_ex3
+
+## run sbatch on ex3
+sbatch run_script.sbatch
+
+# cancel job
+scancel <jobid>
+
+# conda list 
+conda list
+
+# activate cona env
+conda activate Master_ex3_env
+
+# sample
+python scripts/image_sample.py --model_path Temp/openai-2022-09-19-17-01-35-513791/ema_0.9999_250000.pt $MODEL_FLAGS $DIFFUSION_FLAGS
+
+# Remove all expect 1 image from train and test to test white cropped part in dataset.py
