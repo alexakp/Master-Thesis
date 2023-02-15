@@ -1,2 +1,0 @@
-MODEL_FLAGS="--attention_resolutions 32,16,8 --image_size 128 --num_channels 128 --num_heads 4 --num_res_blocks 2 --learn_sigma True --resblock_updown True --use_fp16 True --use_scale_shift_norm True"
-python load_model.py --model_path D:/Simula_data/Models/Temp/openai-2023-01-30-15-32-20-267856/ema_0.9999_020000.pt $MODEL_FLAGS $DIFFUSION_FLAGS
