@@ -11,6 +11,8 @@ meeting_doc
 *.gif
 *.pt
 *.out
+*.sbatch
+*.sh
 .yml
 Thesis_images
 small_ddpm_test
