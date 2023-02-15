@@ -27,6 +27,8 @@ import time
 import conf_mgt
 from utils import yamlread
 from guided_diffusion import dist_util
+import sys
+import wandb
 
 # Workaround
 try:
@@ -114,7 +116,14 @@ def main(conf: conf_mgt.Default_Conf):
     eval_name = conf.get_default_eval_name()
 
     dl = conf.get_dataloader(dset=dset, dsName=eval_name)
+    total_samples = conf.data['eval']['paper_face_mask']['max_len']
+    batch_size = conf.data['eval']['paper_face_mask']['batch_size']
+    samples_gen = 0
+    my_args = {'samples_gen':samples_gen,'batch_size':batch_size,'total_samples':total_samples}
+    wandb.init(project="RePaint-background", entity="alexakp-thesis")
 
+
+    int_i = 1
     for batch in iter(dl):
 
         for k in batch.keys():
@@ -130,6 +139,7 @@ def main(conf: conf_mgt.Default_Conf):
             model_kwargs['gt_keep_mask'] = gt_keep_mask
 
         batch_size = model_kwargs["gt"].shape[0]
+        
 
         if conf.cond_y is not None:
             classes = th.ones(batch_size, dtype=th.long, device=device)
@@ -166,6 +176,10 @@ def main(conf: conf_mgt.Default_Conf):
         conf.eval_imswrite(
             srs=srs, gts=gts, lrs=lrs, gt_keep_masks=gt_keep_masks,
             img_names=batch['GT_name'], dset=dset, name=eval_name, verify_same=False)
+        
+        my_args = {'samples_gen':batch_size*int_i,'batch_size':batch_size,'total_samples':total_samples}
+        wandb.log(my_args)
+        int_i +=1
 
     print("sampling complete")
 

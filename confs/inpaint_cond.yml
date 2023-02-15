@@ -14,8 +14,8 @@
 #
 # This repository was forked from https://github.com/openai/guided-diffusion, which is under the MIT license
 
-attention_resolutions: 32,16,8
-class_cond: false
+attention_resolutions: 16,8
+class_cond: true
 diffusion_steps: 1000
 learn_sigma: true
 noise_schedule: linear
@@ -26,7 +26,7 @@ num_res_blocks: 2
 resblock_updown: true
 use_fp16: true
 use_scale_shift_norm: true
-classifier_scale: 4.0
+classifier_scale: 1.0
 lr_kernel_n_std: 2
 num_samples: 1
 show_progress: true
@@ -49,14 +49,12 @@ use_checkpoint: false
 use_new_attention_order: false
 clip_denoised: true
 use_ddim: false
-latex_name: RePaint
-method_name: Repaint
 image_size: 128
-#model_path: D:/Simula_data/Models/Temp/openai-2023-01-17-20-41-58-065219/ema_0.9999_500000.pt
-model_path: /home/alexakp/D1/Master_Thesis/guided-diffusion/Temp/openai-2023-01-17-20-41-58-065219/ema_0.9999_500000.pt
-name: inpaint_background_500K_linear_model
+classifier_path: D:/Simula_data/Models/Temp/class_cond/model002999.pt
+model_path: D:/Simula_data/Models/Temp/class_cond/ema_0.9999_050000.pt
+name: polyp_background_inpaint_cond
 inpa_inj_sched_prev: true
-n_jobs: 1
+n_jobs: 25
 print_estimated_vars: true
 inpa_inj_sched_prev_cumnoise: false
 schedule_jump_params:
@@ -66,10 +64,10 @@ schedule_jump_params:
   jump_n_sample: 10
 data:
   eval:
-    paper_face_mask:
+    lama_inet256_nn2_n100_test:
       mask_loader: true
-      gt_path: ./data/datasets/gts/best_cropped_polyps
-      mask_path: ./data/datasets/gt_keep_masks/best_cropped_polyps
+      gt_path: ./data/datasets/gts/polyp
+      mask_path: ./data/datasets/gt_keep_masks/polyp
       image_size: 128
       class_cond: false
       deterministic: true
@@ -77,12 +75,13 @@ data:
       random_flip: false
       return_dict: true
       drop_last: false
-      batch_size: 4
+      batch_size: 1
       return_dataloader: true
-      offset: 0
-      max_len: 1000
+      ds_conf:
+        name: random_nn2_256
+      max_len: 1
       paths:
-        srs: ./log/inpaint_background_500K_linear_model/inpainted
-        lrs: ./log/inpaint_background_500K_linear_model/gt_masked
-        gts: ./log/inpaint_background_500K_linear_model/gt
-        gt_keep_masks: ./log/inpaint_background_500K_linear_model/gt_keep_mask
+        srs: ./log/test_inet256_nn2/inpainted
+        lrs: ./log/test_inet256_nn2/gt_masked
+        gts: ./log/test_inet256_nn2/gt
+        gt_keep_masks: ./log/test_inet256_nn2/gt_keep_mask

@@ -53,8 +53,8 @@ latex_name: RePaint
 method_name: Repaint
 image_size: 128
 #model_path: D:/Simula_data/Models/Temp/openai-2023-01-17-20-41-58-065219/ema_0.9999_500000.pt
-model_path: /home/alexakp/D1/Master_Thesis/guided-diffusion/Temp/openai-2023-01-17-20-41-58-065219/ema_0.9999_500000.pt
-name: inpaint_background_500K_linear_model
+model_path: /home/alexakp/D1/Master_Thesis/guided-diffusion/Temp/openai-2023-02-13-14-51-31-991054/ema_0.9999_010000.pt
+name: inpaint_background_clean
 inpa_inj_sched_prev: true
 n_jobs: 1
 print_estimated_vars: true
@@ -82,7 +82,7 @@ data:
       offset: 0
       max_len: 1000
       paths:
-        srs: ./log/inpaint_background_500K_linear_model/inpainted
-        lrs: ./log/inpaint_background_500K_linear_model/gt_masked
-        gts: ./log/inpaint_background_500K_linear_model/gt
-        gt_keep_masks: ./log/inpaint_background_500K_linear_model/gt_keep_mask
+        srs: ./log/inpaint_background_clean/inpainted
+        lrs: ./log/inpaint_background_clean/gt_masked
+        gts: ./log/inpaint_background_clean/gt
+        gt_keep_masks: ./log/inpaint_background_clean/gt_keep_mask

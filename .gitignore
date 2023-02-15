@@ -10,6 +10,7 @@ meeting_doc
 *.eps
 *.gif
 *.pt
+*.out
 .yml
 Thesis_images
 small_ddpm_test
@@ -33,3 +34,5 @@ RCDM
 !github-images/kvasir_polyps.png
 !github-images/our_polyps.png
 !github-images/fp_out2.gif
+wandb
+old

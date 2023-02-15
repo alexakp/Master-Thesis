@@ -269,7 +269,7 @@ def create_gaussian_diffusion(
     conf=None
 ):
 
-    betas = gd.get_named_beta_schedule(noise_schedule, steps, use_scale=True)
+    betas = gd.get_named_beta_schedule(noise_schedule, steps, use_scale=False)
 
     if conf.use_value_logger:
         conf.value_logger.add_value(

@@ -9,3 +9,6 @@ python test.py --conf_path confs/inpaint_pathological-findings.yml
 python test.py --conf_path confs/inpaint_anatomical-landmarks.yml
 
 python test.py --conf_path confs/inpaint_anatomical-and-pathological.yml
+
+python test.py --conf_path confs/inpaint_background_unlabeled.yml
+

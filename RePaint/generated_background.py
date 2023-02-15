@@ -24,7 +24,7 @@ from matplotlib import pyplot as plt
 
 def cover_dataset():
 
-    dataset = 'data\datasets\gts\polyp\*.png'
+    dataset = 'data/datasets/gts/best_cropped_polyps/*.png'
     imgs = glob.glob(dataset)
     print(len(imgs))
 
@@ -45,17 +45,17 @@ def cover_dataset():
                         img[i,j] = [0]*3
                     else:
                         img[i,j] = [255]*3
-        
-        file_name = item.split('data\datasets\gts\polyp\\', 1)[1]
+        print(item)
+        file_name = item.split('data/datasets/gts/best_cropped_polyps\\', 1)[1]
         im = Image.fromarray(img)
-        im.save(f"data/datasets/gt_keep_masks/polyp/{file_name}")
+        im.save(f"data/datasets/gt_keep_masks/best_cropped_polyps/{file_name}")
 
 finale = cover_dataset()
 
 sys.exit()
-img1 =  np.array(Image.open('data\datasets\gts\polyp\\99.png'))
+img1 =  np.array(Image.open('data/datasets/gts/polyp//99.png'))
 
-#mask1 = np.array(Image.open('log\\polyp_background_inpaint\gt_keep_mask\your_file.png').convert('1'))
+#mask1 = np.array(Image.open('log//polyp_background_inpaint/gt_keep_mask/your_file.png').convert('1'))
 
 def cover_img(img):
     print(img.shape)

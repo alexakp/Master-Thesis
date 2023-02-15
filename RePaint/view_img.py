@@ -7,7 +7,7 @@ import os
 
 classcond = False
 
-data = ('D:\Simula_data\Models\Temp\openai-2023-01-15-00-23-49-646190')
+data = ('D:\Simula_data\Models\Temp\openai-2023-02-09-00-52-54-087639')
 print(data)
 log_file = data + '\log.txt'
 
@@ -19,7 +19,7 @@ with open(log_file) as f:
 model_nr = (model_nr.split('.pt', 1)[0])
 print(model_nr)
 
-data = data +'\samples_100x128x128x3.npz'
+data = data +'\samples_1000x128x128x3.npz'
 
 
 data = load(data)
@@ -57,8 +57,8 @@ else:
         for i in range(obj):
             img = data[i]
             img = Image.fromarray(img.astype('uint8'), 'RGB')
-            img.save(f"C:/Users/Alexander-PC-hjemme/Desktop/UiO/Master_Thesis/guided-diffusion/generated_dataset/{model_nr}_32_flip/img_{i}.png")
-            #plt.figure()
-            #plt.imshow(img, interpolation='none')
-            #plt.show()
+            #img.save(f"C:/Users/Alexander-PC-hjemme/Desktop/UiO/Master_Thesis/guided-diffusion/generated_dataset/{model_nr}_32_flip/img_{i}.png")
+            plt.figure()
+            plt.imshow(img, interpolation='none')
+            plt.show()
         #plt.show()
