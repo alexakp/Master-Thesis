@@ -29,7 +29,7 @@ from guided_diffusion.script_util import (
 def main():
     args = create_argparser().parse_args()
     var_args = vars(args)
-    wandb.init(project="Diffusion_sampling", entity="alexakp-thesis",config=vars(args))
+    #wandb.init(project="Diffusion_sampling", entity="alexakp-thesis",config=vars(args))
 
 
     dist_util.setup_dist()
@@ -67,6 +67,9 @@ def main():
             (args.batch_size, 3, args.image_size, args.image_size),
             clip_denoised=args.clip_denoised,
             model_kwargs=model_kwargs,
+            interpolate=args.interpolate,
+            src1=args.src1,
+            src2=args.src2,
         )
         sample = ((sample + 1) * 127.5).clamp(0, 255).to(th.uint8)
         sample = sample.permute(0, 2, 3, 1)
@@ -82,23 +85,11 @@ def main():
             dist.all_gather(gathered_labels, classes)
             all_labels.extend([labels.cpu().numpy() for labels in gathered_labels])
         logger.log(f"created {len(all_images) * args.batch_size} samples")
-        wandb.log({'Current_samples':(len(all_images) * args.batch_size)})
+        #wandb.log({'Current_samples':(len(all_images) * args.batch_size)})
 
     arr = np.concatenate(all_images, axis=0)
     arr = arr[: args.num_samples]
 
-
-    """
-    #img shown here remove this for testing
-
-    tmp = arr[0] # added here
-    plt.imshow(tmp)
-    #plt.show()
-    ################
-    tmp = arr[0] # added here
-    img = Image.fromarray(tmp, 'RGB')
-    """
-    #img.show()
     if args.class_cond:
         label_arr = np.concatenate(all_labels, axis=0)
         label_arr = label_arr[: args.num_samples]
@@ -120,9 +111,12 @@ def main():
 
 def create_argparser():
     defaults = dict(
+        interpolate=False,
+        src1="",
+        src2="",
         clip_denoised=True,
-        num_samples=1000, # 1000
-        batch_size=64, # 64
+        num_samples=1, # 1000
+        batch_size=1, # 64
         use_ddim=False,
         model_path="",
     )

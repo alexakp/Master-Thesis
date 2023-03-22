@@ -1,0 +1,11 @@
+16 randomly selected images from Kvasir-SEG
+
+"cju2zp89k9q1g0855k1x0f1xa.png" OR "cju849c23kgnk0817cgv2hw1e.png" OR "cju8a1jtvpt9m081712iwkca7.png" OR "cju5wqonpm0e60801z88ewmy1.png" OR "cju87ox0kncom0801b98hqnd2.png" OR "cju5ca9hcatkc0801jzwe7tfx.png" OR "cju2s9g11pnra0993gn4eh793.png" OR "cju8ando2qqdo0818ck7i1be1.png" OR
+
+"cju5bf6hxa6m50817rbwettgu.png" OR "cju5vi4nxlc530817uoqm2m7a.png" OR "cju7787c5yy3l080159mwqsnj.png" OR "cju2pjb9v0ywn0878j5g5n69j.png" OR "cju34fojcctcf0799ebolbvkn.png" OR "cju84ih17kp5l09876bkooocl.png" OR "cju7fcgbe2z3p07550vaflqdb.png" OR "cju5uzmaol56l0817flxh4w9p.png"
+
+"cju8a1jtvpt9m081712iwkca7.png" OR "cju5wqonpm0e60801z88ewmy1.png" OR "cju2s9g11pnra0993gn4eh793.png"
+
+16 randomly selected images from our model
+
+15 75 81 112 119 125 198 282 320 468 490 519 729 783 857 867

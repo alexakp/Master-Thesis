@@ -7,12 +7,18 @@ Docstrings have been added, as well as DDIM sampling and a new collection of bet
 
 import enum
 import math
+import sys
+from matplotlib import pyplot as plt
+from PIL import Image
+import imageio
 
 import numpy as np
 import torch as th
+from torchvision import transforms
 
 from .nn import mean_flat
 from .losses import normal_kl, discretized_gaussian_log_likelihood
+import os
 
 
 def get_named_beta_schedule(schedule_name, num_diffusion_timesteps):
@@ -199,6 +205,7 @@ class GaussianDiffusion:
         if noise is None:
             noise = th.randn_like(x_start)
         assert noise.shape == x_start.shape
+
         return (
             _extract_into_tensor(self.sqrt_alphas_cumprod, t, x_start.shape) * x_start
             + _extract_into_tensor(self.sqrt_one_minus_alphas_cumprod, t, x_start.shape)
@@ -435,6 +442,7 @@ class GaussianDiffusion:
             out["mean"] = self.condition_mean(
                 cond_fn, out, x, t, model_kwargs=model_kwargs
             )
+
         sample = out["mean"] + nonzero_mask * th.exp(0.5 * out["log_variance"]) * noise
         return {"sample": sample, "pred_xstart": out["pred_xstart"]}
 
@@ -449,7 +457,11 @@ class GaussianDiffusion:
         model_kwargs=None,
         device=None,
         progress=False,
+        interpolate=False,
+        src1="",
+        src2="",
     ):
+        
         """
         Generate samples from the model.
 
@@ -480,6 +492,9 @@ class GaussianDiffusion:
             model_kwargs=model_kwargs,
             device=device,
             progress=progress,
+            interpolate=interpolate,
+            src1=src1,
+            src2=src2,
         ):
             final = sample
         return final["sample"]
@@ -495,6 +510,10 @@ class GaussianDiffusion:
         model_kwargs=None,
         device=None,
         progress=False,
+        interpolate=False,
+        src1="",
+        src2="",
+
     ):
         """
         Generate samples from the model and yield intermediate samples from
@@ -510,29 +529,101 @@ class GaussianDiffusion:
         if noise is not None:
             img = noise
         else:
+            # Goes here by default
             img = th.randn(*shape, device=device)
         indices = list(range(self.num_timesteps))[::-1]
 
-        if progress:
+        ### Load images you want to interpolate between here img and img2.
+        # converted from tensorflow to pytorch
+        # Original DDPM paper
+        # https://github.com/hojonathanho/diffusion/blob/1e0dceb3b3495bbe19116a5e1b3596cd0706c543/diffusion_tf/diffusion_utils.py
+
+        if(interpolate):
+            print("-------------------------You are interpolating-------------------------\n")
+            print(f"Img 1 source path: {src1}")
+            print(f"Img 2 source path: {src2}\n")
+            save_dir = ""
+            main_dir = "generated-intepolation"
+            idx = 0
+
+
+            while True:
+                # Create the subfolder name using the current index
+                subfolder_name = f"saved_{idx}"
+
+                try:
+                    # Try to create the subfolder
+                    save_dir = os.path.join(main_dir, subfolder_name)
+                    os.mkdir(save_dir)
+                    print(f"Successfully created {subfolder_name}")
+                    break  # Exit the loop if the subfolder is created successfully
+                except FileExistsError:
+                    # If the subfolder already exists, increment the index and try again
+                    idx += 1
+            img = Image.open(src1)
+            convert_tensor = transforms.ToTensor()
+            img = convert_tensor(img).to(device=device).unsqueeze(0)
+            img = (img-0.5)*2
+
+            img2 = Image.open(src2)
+            convert_tensor = transforms.ToTensor()
+            img2 = convert_tensor(img2).to(device=device).unsqueeze(0)
+            img2 = (img2-0.5)*2
+
+            for int_i in range(1000):
+
+                if(int_i%125==0 or int_i==999):
+                    print(int_i)
+                    
+                    t = th.tensor([int_i],device=device)
+                    save_noise_img = self.q_sample(img,t)
+                    save_noise_img2 = self.q_sample(img2,t)
+                    
+                    for step in range(11):
+
+                        x_t = slerp_theta(save_noise_img,save_noise_img2,step*0.1)
+
+                        for i in range(int_i):
+                            with th.no_grad():
+                                x_t = self.p_sample(model,x_t,th.tensor([int_i-i],device=device),clip_denoised=clip_denoised,
+                                            denoised_fn=denoised_fn,
+                                            cond_fn=cond_fn,
+                                            model_kwargs=model_kwargs)
+                                #yield x_t
+                                x_t = x_t['sample']
+
+                        sample = ((x_t + 1) * 127.5).clamp(0, 255).to(th.uint8)
+                        sample = sample.permute(0, 2, 3, 1)
+                        sample = sample.contiguous()
+                        sample = sample.cpu().numpy()
+                        out_img = Image.fromarray(sample[0], 'RGB')
+                    
+                        out_img.save(f'{save_dir}/{int_i}-interpolate-{step}.jpg') # change to .eps for PDF
+                        out_img.save(f'{save_dir}/{int_i}-interpolate-{step}.eps') # change to .eps for PDF
+
+            sys.exit(f"Interpolation is done you should have 99 jpg and eps images in your {save_dir} folder")
+        else:
+            if progress:
             # Lazy import so that we don't depend on tqdm.
-            from tqdm.auto import tqdm
+                from tqdm.auto import tqdm
 
-            indices = tqdm(indices)
+                indices = tqdm(indices)
 
-        for i in indices:
-            t = th.tensor([i] * shape[0], device=device)
-            with th.no_grad():
-                out = self.p_sample(
-                    model,
-                    img,
-                    t,
-                    clip_denoised=clip_denoised,
-                    denoised_fn=denoised_fn,
-                    cond_fn=cond_fn,
-                    model_kwargs=model_kwargs,
-                )
-                yield out
-                img = out["sample"]
+            for i in indices:
+                t = th.tensor([i] * shape[0], device=device)
+                with th.no_grad():
+                    out = self.p_sample(
+                        model,
+                        img,
+                        t,
+                        clip_denoised=clip_denoised,
+                        denoised_fn=denoised_fn,
+                        cond_fn=cond_fn,
+                        model_kwargs=model_kwargs,
+                    )
+                    yield out
+                    img = out["sample"]
+            
 
     def ddim_sample(
         self,
@@ -906,3 +997,5 @@ def _extract_into_tensor(arr, timesteps, broadcast_shape):
     while len(res.shape) < len(broadcast_shape):
         res = res[..., None]
     return res.expand(broadcast_shape)
+
+def slerp_theta(z1, z2, theta): return (1-theta)*z1 + theta *z2

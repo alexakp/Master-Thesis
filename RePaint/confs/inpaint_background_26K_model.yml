@@ -52,9 +52,9 @@ use_ddim: false
 latex_name: RePaint
 method_name: Repaint
 image_size: 128
-#model_path: D:/Simula_data/Models/Temp/openai-2023-02-07-01-23-35-801204/ema_0.9999_026000.pt
-model_path: /home/alexakp/D1/Master_Thesis/guided-diffusion/Temp/openai-2023-02-07-01-23-35-801204/ema_0.9999_026000.pt
-name: inpaint_background_26K_model
+model_path: D:/Simula_data/Models/Temp/openai-2023-02-07-01-23-35-801204/ema_0.9999_026000.pt
+#model_path: /home/alexakp/D1/Master_Thesis/guided-diffusion/Temp/openai-2023-02-07-01-23-35-801204/ema_0.9999_026000.pt
+name: inpaint_background_26K_model-j5-r15
 inpa_inj_sched_prev: true
 n_jobs: 1
 print_estimated_vars: true
@@ -62,8 +62,8 @@ inpa_inj_sched_prev_cumnoise: false
 schedule_jump_params:
   t_T: 250
   n_sample: 1
-  jump_length: 10
-  jump_n_sample: 10
+  jump_length: 5
+  jump_n_sample: 15
 data:
   eval:
     paper_face_mask:
@@ -80,9 +80,9 @@ data:
       batch_size: 4
       return_dataloader: true
       offset: 0
-      max_len: 1000
+      max_len: 16
       paths:
-        srs: ./log/inpaint_background_26K_model/inpainted
-        lrs: ./log/inpaint_background_26K_model/gt_masked
-        gts: ./log/inpaint_background_26K_model/gt
-        gt_keep_masks: ./log/inpaint_background_26K_model/gt_keep_mask
+        srs: ./log/inpaint_background_26K_model-j5-r15/inpainted
+        lrs: ./log/inpaint_background_26K_model-j5-r15/gt_masked
+        gts: ./log/inpaint_background_26K_model-j5-r15/gt
+        gt_keep_masks: ./log/inpaint_background_26K_model-j5-r15/gt_keep_mask

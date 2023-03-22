@@ -1,2 +1,2 @@
 import splitfolders
-splitfolders.ratio('D:/Simula_data/unlabeled-dataset-128x128/temp', output="D:/Simula_data/unlabeled-dataset-128x128", seed=1337, ratio=(.95, 0,0.05)) 
+splitfolders.ratio('D:/Simula_data/transformed_clean_opt', output="D:/Simula_data/transformed_clean_opt", seed=1337, ratio=(.8, .2,0)) 

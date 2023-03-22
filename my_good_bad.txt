@@ -1,0 +1,7 @@
+3 good
+
+"img_90" OR "img_102" OR "img_184"
+
+3 bad
+
+"img_30" OR "img_869" OR "img_140"

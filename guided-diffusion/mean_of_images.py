@@ -4,10 +4,15 @@ from PIL import Image
 import numpy as np
 from numpy import asarray
 from matplotlib import pyplot as plt
+import sys
 
 
 
-dropout = ['0.1','0.3']
+
+
+dropout = ['0','0.1','0.3']
+markers = ['o','^','s']
+marker = 0
 for drops in dropout:
     black_images =[]
     x_range = []
@@ -26,11 +31,36 @@ for drops in dropout:
             i=0
             for img,name in zip(images,names):
                 mean = np.mean(img, axis=(0, 1))
-                if (mean==0):
+                if (mean<0.1):
                     i+=1
 
             print(f"Total images that generates black image and not polyp: {i}")
             black_images.append(i)
-    plt.plot(x_range,black_images, marker="o",)
-plt.legend(["0.1 dropout", "0.3 dropout"], loc ="upper right")
+    plt.plot(x_range,black_images, marker=markers[marker],)
+    marker+=1
+plt.legend(["0 dropout","0.1 dropout", "0.3 dropout"], loc ="upper right")
 plt.show()
+
+sys.exit()
+dropout = ['0.3']
+for drops in dropout:
+    black_images =[]
+    x_range = []
+    model_nr = f"018000" 
+    #print(model_nr)
+    folder_ = f'generated-fine-tuned-cropped-{drops}-dropout'
+
+    images = [asarray(Image.open(image).convert('L')) for image in glob.glob(f"{folder_}/{model_nr}/*.png")]
+
+    names = [image for image in glob.glob(f"{folder_}/{model_nr}//*.png")]
+
+
+    i=0
+    for img,name in zip(images,names):
+        mean = np.mean(img, axis=(0, 1))
+        if (mean<0.01):
+            i+=1
+            print(name)
+
+    print(f"Total images that generates black image and not polyp: {i}")
+sys.exit()

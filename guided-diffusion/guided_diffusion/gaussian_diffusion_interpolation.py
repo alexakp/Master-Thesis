@@ -520,15 +520,19 @@ class GaussianDiffusion:
             # Goes here by default
             img = th.randn(*shape, device=device)
         indices = list(range(self.num_timesteps))[::-1]
+        print("We are using p_sample_loop_progressive with if statement")
 
-        print("We are using p_sample_loop_progressive")
+        ### Load images you want to interpolate between here img and img2.
+        # converted from tensorflow to pytorch
+        # Original DDPM paper
+        # https://github.com/hojonathanho/diffusion/blob/1e0dceb3b3495bbe19116a5e1b3596cd0706c543/diffusion_tf/diffusion_utils.py
 
         img = Image.open('transformed_dataset_128/images/cju2z1nxlzaj40835wj81s1iy.png')
         convert_tensor = transforms.ToTensor()
         img = convert_tensor(img).to(device=device).unsqueeze(0)
         img = (img-0.5)*2
 
-        img2 = Image.open('0a2cbbad-5506-4b9d-a91b-bf94dc34d263.jpg')
+        img2 = Image.open('transformed_dataset_128/images/cju0qkwl35piu0993l0dewei2.png')
         convert_tensor = transforms.ToTensor()
         img2 = convert_tensor(img2).to(device=device).unsqueeze(0)
         img2 = (img2-0.5)*2

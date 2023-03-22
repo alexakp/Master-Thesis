@@ -38,3 +38,5 @@ RCDM
 !github-images/fp_out2.gif
 wandb
 old
+Pytorch-UNet
+*.xlsx

@@ -53,8 +53,8 @@ latex_name: RePaint
 method_name: Repaint
 image_size: 128
 #model_path: D:/Simula_data/Models/Temp/openai-2023-01-17-20-41-58-065219/ema_0.9999_500000.pt
-model_path: /home/alexakp/D1/Master_Thesis/guided-diffusion/Temp/openai-2023-01-17-20-41-58-065219/ema_0.9999_500000.pt
-name: inpaint_background_500K_linear_model
+model_path: /home/alexakp/D1/Master_Thesis/guided-diffusion/Temp/openai-2023-02-16-16-24-18-350701/ema_0.9999_020000.pt
+name: inpaint_background_clean_opt-overfitted-polyp
 inpa_inj_sched_prev: true
 n_jobs: 1
 print_estimated_vars: true
@@ -68,8 +68,8 @@ data:
   eval:
     paper_face_mask:
       mask_loader: true
-      gt_path: ./data/datasets/gts/best_cropped_polyps
-      mask_path: ./data/datasets/gt_keep_masks/best_cropped_polyps
+      gt_path: ./data/datasets/gts/over-tuned-cropped
+      mask_path: ./data/datasets/gt_keep_masks/over-tuned-cropped
       image_size: 128
       class_cond: false
       deterministic: true
@@ -82,7 +82,7 @@ data:
       offset: 0
       max_len: 1000
       paths:
-        srs: ./log/inpaint_background_500K_linear_model/inpainted
-        lrs: ./log/inpaint_background_500K_linear_model/gt_masked
-        gts: ./log/inpaint_background_500K_linear_model/gt
-        gt_keep_masks: ./log/inpaint_background_500K_linear_model/gt_keep_mask
+        srs: ./log/inpaint_background_clean_opt-overfitted-polyp/inpainted
+        lrs: ./log/inpaint_background_clean_opt-overfitted-polyp/gt_masked
+        gts: ./log/inpaint_background_clean_opt-overfitted-polyp/gt
+        gt_keep_masks: ./log/inpaint_background_clean_opt-overfitted-polyp/gt_keep_mask
