@@ -31,14 +31,18 @@ for drops in dropout:
             i=0
             for img,name in zip(images,names):
                 mean = np.mean(img, axis=(0, 1))
-                if (mean<0.1):
+                if (mean==0):
                     i+=1
 
             print(f"Total images that generates black image and not polyp: {i}")
-            black_images.append(i)
+            black_images.append(((i)*100)/len(names))
     plt.plot(x_range,black_images, marker=markers[marker],)
     marker+=1
+plt.ylabel('% Failure')
+plt.xlabel('Iterations')
 plt.legend(["0 dropout","0.1 dropout", "0.3 dropout"], loc ="upper right")
+plt.savefig("black-images.eps")
+plt.savefig("black-images.png")
 plt.show()
 
 sys.exit()
