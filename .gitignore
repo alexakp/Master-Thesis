@@ -1,4 +1,4 @@
-Kvasir-SEG
+/Kvasir-SEG
 out_imgs
 inpainting/log
 output
@@ -40,3 +40,16 @@ wandb
 old
 Pytorch-UNet
 *.xlsx
+!github-images/interpolation/interpolation-collage.jpg
+!github-images/Generated/images/img_90.png
+!github-images/Generated/masks/img_90.png
+!github-images/Generated/images/img_102.png
+!github-images/Generated/masks/img_102.png
+!github-images/Generated/images/img_184.png
+!github-images/Generated/masks/img_184.png
+!github-images/Kvasir-SEG/images/cju2s9g11pnra0993gn4eh793.png
+!github-images/Kvasir-SEG/masks/cju2s9g11pnra0993gn4eh793.png
+!github-images/Kvasir-SEG/images/cju5wqonpm0e60801z88ewmy1.png
+!github-images/Kvasir-SEG/masks/cju5wqonpm0e60801z88ewmy1.png
+!github-images/Kvasir-SEG/images/cju8a1jtvpt9m081712iwkca7.png
+!github-images/Kvasir-SEG/masks/cju8a1jtvpt9m081712iwkca7.png

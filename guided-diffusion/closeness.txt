@@ -1,0 +1,5 @@
+'transformed_dataset_128/images\\cju5bdwa3aatx0818b79i18zf.png': 0.9085132,
+'transformed_dataset_128/images\\cju1fjsb4sipq09931lvd8e41.png': 0.883848,
+'transformed_dataset_128/images\\cju5huurrecm70801y680y13m.png': 0.8817089, 
+'transformed_dataset_128/images\\cju418rckl3ur08012psrx1r1.png': 0.8772518, 
+'transformed_dataset_128/images\\cju8b542nr81x0871uxnkm9ih.png': 0.8758362}
