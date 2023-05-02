@@ -542,24 +542,13 @@ class GaussianDiffusion:
             print("-------------------------You are interpolating-------------------------\n")
             print(f"Img 1 source path: {src1}")
             print(f"Img 2 source path: {src2}\n")
-            save_dir = ""
-            main_dir = "generated-intepolation"
-            idx = 0
+            save_dir = "generated-intepolation"
+            try: 
+                os.mkdir(save_dir)
+            except OSError as error:
+                pass
 
 
-            while True:
-                # Create the subfolder name using the current index
-                subfolder_name = f"saved_{idx}"
-
-                try:
-                    # Try to create the subfolder
-                    save_dir = os.path.join(main_dir, subfolder_name)
-                    os.mkdir(save_dir)
-                    print(f"Successfully created {subfolder_name}")
-                    break  # Exit the loop if the subfolder is created successfully
-                except FileExistsError:
-                    # If the subfolder already exists, increment the index and try again
-                    idx += 1
             img = Image.open(src1)
             convert_tensor = transforms.ToTensor()
             img = convert_tensor(img).to(device=device).unsqueeze(0)
