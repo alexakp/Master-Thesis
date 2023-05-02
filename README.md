@@ -42,7 +42,7 @@ DIFFUSION_FLAGS="--diffusion_steps 1000 --noise_schedule linear --rescale_learne
 python scripts/image_sample.py --model_path your/model/path.pt $MODEL_FLAGS $DIFFUSION_FLAGS
  
 ```
-![](polyp-images/interpolation/interpolation-collage.jpg)
+![](github-images/interpolation/interpolation-collage.jpg)
 
 # Polyps with masks
 
@@ -68,7 +68,7 @@ python scripts/image_sample.py --model_path your/model/path.pt $MODEL_FLAGS $DIF
 ## Polyp Images 128x128
 Generated polyp images             |  Real polyp images from Kvasir-SEG 
 :-------------------------:|:-------------------------:
-![](polyp-images/Generated/images/img_90.png) ![](polyp-images/Generated/masks/img_90.png) | ![](polyp-images/Kvasir-SEG/images/cju2s9g11pnra0993gn4eh793.png) ![](polyp-images/Kvasir-SEG/masks/cju2s9g11pnra0993gn4eh793.png)
- ![](polyp-images/Generated/images/img_102.png) ![](polyp-images/Generated/masks/img_102.png) | ![](polyp-images/Kvasir-SEG/images/cju5wqonpm0e60801z88ewmy1.png) ![](polyp-images/Kvasir-SEG/masks/cju5wqonpm0e60801z88ewmy1.png)
- ![](polyp-images/Generated/images/img_184.png) ![](polyp-images/Generated/masks/img_184.png) | ![](polyp-images/Kvasir-SEG/images/cju8a1jtvpt9m081712iwkca7.png) ![](polyp-images/Kvasir-SEG/masks/cju8a1jtvpt9m081712iwkca7.png)
+![](github-images/Generated/images/img_90.png) ![](github-images/Generated/masks/img_90.png) | ![](github-images/Kvasir-SEG/images/cju2s9g11pnra0993gn4eh793.png) ![](github-images/Kvasir-SEG/masks/cju2s9g11pnra0993gn4eh793.png)
+ ![](github-images/Generated/images/img_102.png) ![](github-images/Generated/masks/img_102.png) | ![](github-images/Kvasir-SEG/images/cju5wqonpm0e60801z88ewmy1.png) ![](github-images/Kvasir-SEG/masks/cju5wqonpm0e60801z88ewmy1.png)
+ ![](github-images/Generated/images/img_184.png) ![](github-images/Generated/masks/img_184.png) | ![](github-images/Kvasir-SEG/images/cju8a1jtvpt9m081712iwkca7.png) ![](github-images/Kvasir-SEG/masks/cju8a1jtvpt9m081712iwkca7.png)
  
